@@ -16,97 +16,77 @@ autoinstall:
     allow-pw: true
     install-server: true
   storage:
-    layout:
-      name: lvm
-      password: aim
     config:
       - id: disk0
-        name: disk0
         type: disk
+        match:
+          size: largest
         ptable: gpt
-        preserve: true
-        grub_device: false
-      - id: esp
+        wipe: superblock-recursive
+        preserve: false
+        name: ''
+        grub_device: true
+        keep: false
+        overwrite: false
+        device: "/dev/sda"
+      - id: partition0
         type: partition
-        device: disk0
         size: 1G
         flag: boot
         number: 1
-        wipe: superblock
+        device: disk0
+        preserve: false
         grub_device: true
-      - id: esp-format
-        type: format
-        fstype: fat32
-        volume: esp
-      - id: boot
+      - id: partition1
         type: partition
-        device: disk0
-        size: 2G
-        number: 2
-      - id: boot-format
-        type: format
-        fstype: ext4
-        volume: boot
-      - id: root
-        type: partition
-        device: disk0
-        size: 40G
-        wipe: superblock
-        number: 3
-      - id: vgroot
-        type: lvm_volgroup
-        name: vgroot
-        devices: [root]
-      - id: lvroot
-        type: lvm_partition
-        name: lvroot
-        volgroup: vgroot
-        wipe: superblock
-        size: 20G
-      - id: luroot
-        type: dm_crypt
-        dm_name: luroot
-        volume: lvroot
-        key: banan
-      - id: luroot-format
-        type: format
-        fstype: ext4
-        volume: luroot
-      - id: pool_part
-        type: partition
-        device: disk0
         size: -1
-        number: 4
-      - id: pool
-        type: zpool
-        pool: pool
-        vdevs: [pool_part]
-        mountpoint: /pool
-        pool_properties:
-          version: null
-          ashift: 12
-          autotrim: "on"
-        fs_properties:
-          acltype: posixacl
-          xattr: sa
-          compression: lz4
-          normalization: formD
-          relatime: "on"
-      - id: luroot-mount
+        number: 2
+        device: disk0
+        preserve: false
+      - id: cryptsetup1
+        type: luks
+        device: partition1
+        preserve: false
+        password: aim
+        keysize: 256
+        cipher: aes-xts-plain64
+        name: cryptroot
+      - id: lvm_volgroup
+        type: lvm_volgroup
+        devices:
+          - cryptsetup1
+        name: vgubuntu
+      - id: lvm_root
+        type: lvm_partition
+        size: 20G
+        volgroup: lvm_volgroup
+        name: lv_root
+      - id: lvm_home
+        type: lvm_partition
+        size: -1
+        volgroup: lvm_volgroup
+        name: lv_home
+      - id: fs_boot
+        type: format
+        fstype: ext4
+        volume: partition0
+      - id: fs_root
+        type: format
+        fstype: ext4
+        volume: lvm_root
+      - id: fs_home
+        type: format
+        fstype: ext4
+        volume: lvm_home
+      - id: mount_boot
         type: mount
-        device: luroot-format
-        path: /
-      - id: boot-mount
-        type: mount
-        device: boot-format
+        device: fs_boot
         path: /boot
-      - id: esp-mount
+      - id: mount_root
         type: mount
-        device: esp-format
-        path: /boot/efi
-      - id: home
-        type: zfs
-        pool: pool
-        volume: home
-        properties:
-          mountpoint: /home
+        device: fs_root
+        path: /
+      - id: mount_home
+        type: mount
+        device: fs_home
+        path: /home
