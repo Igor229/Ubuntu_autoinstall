@@ -1,0 +1,14 @@
+autoinstall:
+  version: 1
+  identity:
+    hostname: LPT-0
+    username: kukuruz
+    password: $6$4YUDP5jb24rX/J8N$v8XjXMgtIsPc1mvE/aJf6U36eDpeX.X0FpGvh0bkGY5eNmnEa8GikZ775hCPhcikhAhD2ks52.gphDNLD6W/f1
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  locale: en_US.UTF-8
+  ssh:
+    allow-pw: true
+    install-server: true
