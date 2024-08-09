@@ -1,23 +1,18 @@
 #cloud-config
 autoinstall:
   version: 1
-
   source:
     id: ubuntu-server-minimal
-
   locale: en_US.UTF-8
   keyboard:
     layout: us
-
   identity:
     username: egidio
     hostname: linuxconfig
     password: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
-
   ssh:
     install-server: true
     allow-pw: true
-
   shutdown: reboot
   storage:
     config:
@@ -25,77 +20,61 @@ autoinstall:
         type: disk
         ptable: gpt
         wipe: superblock-recursive
-
       - id: efipart
         type: partition
-        device: disk-vda
-        offset: 1048576
+        device: disk
         size: 600M
         flag: boot
-        grub_device: true
-
       - id: bootpart
         type: partition
         device: disk
         size: 1G
-
       - id: pvpart
         type: partition
         device: disk
         size: -1
-
       - id: vg0
         type: volgroup
         name: vg0
         devices: pvpart
-
       - id: root
         type: partition
         name: root
         volgroup: vg0
         size: 45G
- 
       - id: home
         type: partition
         name: home
         volgroup: vg0
         size: 50G
-
       - id: efipart_fs
         type: format
         volume: efipart
         fstype: fat32
-
       - id: bootpart_fs
         type: format
         volume: bootpart
         fstype: ext4
-
       - id: root_fs
         type: format
         volume: root
         fstype: ext4
-
       - id: home_fs
         type: format
         volume: home
         fstype: ext4
-
       - id: efipart-mount
         type: mount
         device: efipart_fs
         path: /boot/efi
-
       - id: bootpart-mount
         type: mount
         device: bootpart_fs
         path: /boot
-
       - id: root_lv_mount
         type: mount
         device: root_lv_fs
         path: /
-
       - id: home_lv_mount
         type: mount
         device: home_lv_fs
