@@ -8,13 +8,6 @@ autoinstall:
   locale: en_US.UTF-8
   keyboard:
     layout: us
-  timezone: Europe/Rome
-
-  network:
-    version: 2
-    ethernets:
-      enp1s0:
-        dhcp4: true
 
   identity:
     username: egidio
@@ -24,16 +17,6 @@ autoinstall:
   ssh:
     install-server: true
     allow-pw: true
-    authorized-keys: []
-
-  packages:
-    - git
-    - python3-pip
-
-  snaps:
-    - name: pycharm-community
-      channel: stable 
-      classic: true
 
   shutdown: reboot
   storage:
