@@ -1,24 +1,47 @@
 #cloud-config
 autoinstall:
   version: 1
+
   source:
-    id: ubuntu-desktop-minimal
+    id: ubuntu-server-minimal
+
   locale: en_US.UTF-8
   keyboard:
     layout: us
+  timezone: Europe/Rome
+
+  network:
+    version: 2
+    ethernets:
+      enp1s0:
+        dhcp4: true
+
   identity:
-    hostname: LPT-0
-    username: kukuruz
-    password: $6$eETFZuc/LI7QzZ7A$oTvQ.ED4NaDWHLKs.tmdZukDC/qbcx0XQ08OXdvQVScCKEPlElKWstJ9hOjitR2Ni0YZx95wmrD0m8BWVG0kV1
+    username: egidio
+    hostname: linuxconfig
+    password: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
+
   ssh:
-    allow-pw: true
     install-server: true
+    allow-pw: true
+    authorized-keys: []
+
+  packages:
+    - git
+    - python3-pip
+
+  snaps:
+    - name: pycharm-community
+      channel: stable 
+      classic: true
+
+  shutdown: reboot
   storage:
     config:
-      - id: disk0
-        name: disk0
+      - id: disk-vda
         type: disk
         ptable: gpt
+        path: /dev/vda
         wipe: superblock-recursive
 
       - id: efipart
@@ -29,11 +52,11 @@ autoinstall:
         flag: boot
         grub_device: true
 
-      - id: boot
+      - id: bootpart
         type: partition
-        device: disk0
-        size: 2G
-      
+        device: disk-vda
+        size: 1G
+
       - id: pvpart
         type: partition
         device: disk-vda
@@ -41,8 +64,8 @@ autoinstall:
 
       - id: pvpart-crypt
         type: dm_crypt
-        vilume: pvpart
-        key: aim
+        volume: pvpart
+        key: mysecretpassword
 
       - id: vg0
         type: lvm_volgroup
@@ -50,15 +73,15 @@ autoinstall:
         devices:
           - pvpart-crypt
 
-      - id: root
+      - id: root_lv
         type: lvm_partition
-        name: root
+        name: root_lv
         volgroup: vg0
-        size: 35G
+        size: 45G
  
-      - id: home
+      - id: home_lv
         type: lvm_partition
-        name: home
+        name: home_lv
         volgroup: vg0
         size: 50G
 
@@ -67,19 +90,19 @@ autoinstall:
         volume: efipart
         fstype: fat32
 
-      - id: boot_fs
+      - id: bootpart_fs
         type: format
-        volume: boot
+        volume: bootpart
         fstype: ext4
 
-      - id: root_fs
+      - id: root_lv_fs
         type: format
-        volume: root
+        volume: root_lv
         fstype: ext4
 
-      - id: home_fs
+      - id: home_lv_fs
         type: format
-        volume: home
+        volume: home_lv
         fstype: ext4
 
       - id: efipart-mount
@@ -87,17 +110,17 @@ autoinstall:
         device: efipart_fs
         path: /boot/efi
 
-      - id: boot-mount
+      - id: bootpart-mount
         type: mount
         device: bootpart_fs
         path: /boot
 
-      - id: root_mount
+      - id: root_lv_mount
         type: mount
-        device: root_fs
+        device: root_lv_fs
         path: /
 
-      - id: home_mount
+      - id: home_lv_mount
         type: mount
-        device: home_fs
+        device: home_lv_fs
         path: /home
