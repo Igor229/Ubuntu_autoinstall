@@ -21,10 +21,9 @@ autoinstall:
   shutdown: reboot
   storage:
     config:
-      - id: disk-vda
+      - id: disk
         type: disk
         ptable: gpt
-        path: /dev/vda
         wipe: superblock-recursive
 
       - id: efipart
@@ -37,34 +36,28 @@ autoinstall:
 
       - id: bootpart
         type: partition
-        device: disk-vda
+        device: disk
         size: 1G
 
       - id: pvpart
         type: partition
-        device: disk-vda
+        device: disk
         size: -1
 
-      - id: pvpart-crypt
-        type: dm_crypt
-        volume: pvpart
-        key: mysecretpassword
-
       - id: vg0
-        type: lvm_volgroup
+        type: volgroup
         name: vg0
-        devices:
-          - pvpart-crypt
+        devices: pvpart
 
-      - id: root_lv
-        type: lvm_partition
-        name: root_lv
+      - id: root
+        type: partition
+        name: root
         volgroup: vg0
         size: 45G
  
-      - id: home_lv
-        type: lvm_partition
-        name: home_lv
+      - id: home
+        type: partition
+        name: home
         volgroup: vg0
         size: 50G
 
@@ -78,14 +71,14 @@ autoinstall:
         volume: bootpart
         fstype: ext4
 
-      - id: root_lv_fs
+      - id: root_fs
         type: format
-        volume: root_lv
+        volume: root
         fstype: ext4
 
-      - id: home_lv_fs
+      - id: home_fs
         type: format
-        volume: home_lv
+        volume: home
         fstype: ext4
 
       - id: efipart-mount
