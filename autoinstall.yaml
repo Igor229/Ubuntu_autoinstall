@@ -2,16 +2,14 @@
 autoinstall:
   version: 1
   source:
-    id: ubuntu-desktop
+    id: ubuntu-desktop-minimal
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
   identity:
     hostname: LPT-0
     username: kukuruz
     password: $6$eETFZuc/LI7QzZ7A$oTvQ.ED4NaDWHLKs.tmdZukDC/qbcx0XQ08OXdvQVScCKEPlElKWstJ9hOjitR2Ni0YZx95wmrD0m8BWVG0kV1
-  keyboard:
-    layout: us
-    toggle: null
-    variant: ''
-  locale: en_US.UTF-8
   ssh:
     allow-pw: true
     install-server: true
