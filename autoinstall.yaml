@@ -13,13 +13,12 @@ autoinstall:
   ssh:
     install-server: true
     allow-pw: true
-  shutdown: reboot
   storage:
     config:
       - id: disk
         type: disk
         ptable: gpt
-        wipe: superblock-recursive
+        device: /dev/sda
       - id: efipart
         type: partition
         device: disk
@@ -32,18 +31,20 @@ autoinstall:
       - id: pvpart
         type: partition
         device: disk
+        size: -1
       - id: vg0
-        type: volgroup
+        type: lvm_volgroup
         name: vg0
-        devices: pvpart
-      - id: root
-        type: partition
-        name: root
+        devices:
+          - pvpart
+      - id: root_lv
+        type: lvm_partition
+        name: lv_root
         volgroup: vg0
         size: 45G
-      - id: home
-        type: partition
-        name: home
+      - id: home_lv
+        type: lvm_partition
+        name: lv_home
         volgroup: vg0
         size: 50G
       - id: efipart_fs
@@ -56,11 +57,11 @@ autoinstall:
         fstype: ext4
       - id: root_fs
         type: format
-        volume: root
+        volume: root_lv
         fstype: ext4
       - id: home_fs
         type: format
-        volume: home
+        volume: home_lv
         fstype: ext4
       - id: efipart-mount
         type: mount
@@ -72,9 +73,9 @@ autoinstall:
         path: /boot
       - id: root_lv_mount
         type: mount
-        device: root_lv_fs
+        device: root_fs
         path: /
       - id: home_lv_mount
         type: mount
-        device: home_lv_fs
+        device: home_fs
         path: /home
