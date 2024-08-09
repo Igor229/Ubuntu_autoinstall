@@ -32,7 +32,6 @@ autoinstall:
       - id: pvpart
         type: partition
         device: disk
-        size: -1
       - id: vg0
         type: volgroup
         name: vg0
