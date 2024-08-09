@@ -18,7 +18,7 @@ autoinstall:
   storage:
     layout:
       name: lvm
-      password: $6$eETFZuc/LI7QzZ7A$oTvQ.ED4NaDWHLKs.tmdZukDC/qbcx0XQ08OXdvQVScCKEPlElKWstJ9hOjitR2Ni0YZx95wmrD0m8BWVG0kV1
+      password: aim
     config:
       - type: partition
         id: boot-partition
@@ -33,11 +33,11 @@ autoinstall:
       - id: cryptroot
         type: luks
         device: root-partition
-        password: $6$eETFZuc/LI7QzZ7A$oTvQ.ED4NaDWHLKs.tmdZukDC/qbcx0XQ08OXdvQVScCKEPlElKWstJ9hOjitR2Ni0YZx95wmrD0m8BWVG0kV1
+        password: aim
       - id: crypthome
         type: luks
         device: home-partition
-        password: $6$eETFZuc/LI7QzZ7A$oTvQ.ED4NaDWHLKs.tmdZukDC/qbcx0XQ08OXdvQVScCKEPlElKWstJ9hOjitR2Ni0YZx95wmrD0m8BWVG0kV1
+        password: aim
       - id: lvm-root
         type: lvm_partition
         volgroup: vgubuntu
