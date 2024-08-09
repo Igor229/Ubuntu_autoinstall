@@ -47,19 +47,19 @@ autoinstall:
         key: aim
 
       - id: vg0
-        type: volgroup
+        type: lvm_volgroup
         name: vg0
         devices:
           - pvpart-crypt
 
       - id: root
-        type: partition
+        type: lvm_partition
         name: root
         volgroup: vg0
         size: 35G
  
       - id: home
-        type: partition
+        type: lvm_partition
         name: home
         volgroup: vg0
         size: 50G
