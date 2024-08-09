@@ -20,57 +20,89 @@ autoinstall:
       name: lvm
       password: aim
     config:
-      - type: partition
-        id: boot-partition
-        size: 10G
+      - id: disk0
+        name: disk0
+        type: disk
+        ptable: gpt
+        wipe: superblock-recursive
+
+      - id: efipart
+        type: partition
+        device: disk-vda
+        offset: 1048576
+        size: 600M
         flag: boot
-      - type: partition
-        id: root-partition
-        size: 32G
-      - type: partition
-        id: home-partition
-        size: 55G
-      - id: cryptroot
-        type: luks
-        device: root-partition
-        password: aim
-      - id: crypthome
-        type: luks
-        device: home-partition
-        password: aim
-      - id: lvm-root
-        type: lvm_partition
-        volgroup: vgubuntu
-        name: lv_root
+        grub_device: true
+
+      - id: boot
+        type: partition
+        device: disk0
+        size: 2G
+      
+      - id: pvpart
+        type: partition
+        device: disk-vda
         size: -1
-        device: cryptroot
-      - id: lvm-home
-        type: lvm_partition
-        volgroup: vgubuntu
-        name: lv_home
-        size: -1
-        device: crypthome
-      - id: fs-boot
+
+      - id: pvpart-crypt
+        type: dm_crypt
+        vilume: pvpart
+        key: aim
+
+      - id: vg0
+        type: volgroup
+        name: vg0
+        devices:
+          - pvpart-crypt
+
+      - id: root
+        type: partition
+        name: root
+        volgroup: vg0
+        size: 35G
+ 
+      - id: home
+        type: partition
+        name: home
+        volgroup: vg0
+        size: 50G
+
+      - id: efipart_fs
         type: format
-        fstype: ext4
-        volume: boot-partition
-      - id: fs-root
+        volume: efipart
+        fstype: fat32
+
+      - id: boot_fs
         type: format
+        volume: boot
         fstype: ext4
-        volume: lvm-root
-      - id: fs-home
+
+      - id: root_fs
         type: format
+        volume: root
         fstype: ext4
-        volume: lvm-home
-      - id: mount-boot
+
+      - id: home_fs
+        type: format
+        volume: home
+        fstype: ext4
+
+      - id: efipart-mount
         type: mount
+        device: efipart_fs
+        path: /boot/efi
+
+      - id: boot-mount
+        type: mount
+        device: bootpart_fs
         path: /boot
-        device: fs-boot
-      - id: mount-root
+
+      - id: root_mount
         type: mount
+        device: root_fs
         path: /
-        device: fs-root
-      - id: mount-home
+
+      - id: home_mount
         type: mount
+        device: home_fs
         path: /home
-        device: fs-home
