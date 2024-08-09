@@ -42,6 +42,11 @@ autoinstall:
         device: disk
         wipe: superblock
         number: 3
+      - type: dm_crypt
+        id: crypt-root
+        volume: root
+        dm_name: crypt-root
+        key: setup
       - type: partition
         id: home
         name: home
@@ -49,6 +54,11 @@ autoinstall:
         device: disk
         wipe: superblock
         number: 4
+      - type: dm_home
+        id: crypt-home
+        volume: home
+        dm_name: crypt-home
+        key: setup
       - type: format
         id: efipart_fs
         volume: efipart
@@ -61,12 +71,12 @@ autoinstall:
         label: boot
       - type: format
         id: root_fs
-        volume: root
+        volume: crypt-root
         fstype: ext4
         label: root
       - type: format
         id: home_fs
-        volume: home
+        volume: crypt-home
         fstype: ext4
         label: home
       - type: mount
