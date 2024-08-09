@@ -42,11 +42,6 @@ autoinstall:
         device: disk
         wipe: superblock
         number: 3
-      - type: dm_crypt
-        id: crypt-root
-        volume: root
-        dm_name: crypt-root
-        key: setup
       - type: partition
         id: home
         name: home
@@ -54,6 +49,11 @@ autoinstall:
         device: disk
         wipe: superblock
         number: 4
+      - type: dm_crypt
+        id: crypt-root
+        volume: root
+        dm_name: crypt-root
+        key: setup
       - type: dm_home
         id: crypt-home
         volume: home
