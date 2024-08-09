@@ -1,8 +1,8 @@
 #cloud-config
 autoinstall:
   version: 1
-  source:
-    id: ubuntu-server-minimal
+  refresh-installer:
+    update: yes
   locale: en_US.UTF-8
   keyboard:
     layout: us
@@ -15,67 +15,73 @@ autoinstall:
     allow-pw: true
   storage:
     config:
-      - id: disk
-        type: disk
+      - type: disk
+        id: disk
         ptable: gpt
-        device: /dev/sda
-      - id: efipart
-        type: partition
+        path: /dev/sda
+        wipe: superblock
+        name: system
+      - type: partition
+        id: efipart
         device: disk
         size: 600M
         flag: boot
-      - id: bootpart
-        type: partition
+        grub_device: true
+        wipe: superblock
+        number: 1
+      - type: partition
+        id: bootpart
         device: disk
-        size: 1G
-      - id: pvpart
-        type: partition
+        size: 5G
+        wipe: superblock
+        number: 2
+      - type: partition
+        id: root
+        name: root
+        size: 30G
         device: disk
-        size: -1
-      - id: vg0
-        type: lvm_volgroup
-        name: vg0
-        devices:
-          - pvpart
-      - id: root_lv
-        type: lvm_partition
-        name: lv_root
-        volgroup: vg0
-        size: 45G
-      - id: home_lv
-        type: lvm_partition
-        name: lv_home
-        volgroup: vg0
+        wipe: superblock
+        number: 3
+      - type: partition
+        id: home
+        name: home
         size: 50G
-      - id: efipart_fs
-        type: format
+        device: disk
+        wipe: superblock
+        number: 4
+      - type: format
+        id: efipart_fs
         volume: efipart
         fstype: fat32
-      - id: bootpart_fs
-        type: format
+        label: efi
+      - type: format
+        id: bootpart_fs
         volume: bootpart
         fstype: ext4
-      - id: root_fs
-        type: format
-        volume: root_lv
+        label: boot
+      - type: format
+        id: root_fs
+        volume: root
         fstype: ext4
-      - id: home_fs
-        type: format
-        volume: home_lv
+        label: root
+      - type: format
+        id: home_fs
+        volume: home
         fstype: ext4
-      - id: efipart-mount
-        type: mount
+        label: home
+      - type: mount
+        id: efipart-mount
         device: efipart_fs
         path: /boot/efi
-      - id: bootpart-mount
-        type: mount
+      - type: mount
+        id: bootpart-mount
         device: bootpart_fs
         path: /boot
-      - id: root_lv_mount
-        type: mount
+      - type: mount
+        id: root_mount
         device: root_fs
         path: /
-      - id: home_lv_mount
-        type: mount
+      - type: mount
+        id: home_mount
         device: home_fs
         path: /home
