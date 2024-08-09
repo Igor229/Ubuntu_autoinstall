@@ -18,95 +18,59 @@ autoinstall:
   storage:
     layout:
       name: lvm
+      password: $6$4YUDP5jb24rX/J8N$v8XjXMgtIsPc1mvE/aJf6U36eDpeX.X0FpGvh0bkGY5eNmnEa8GikZ775hCPhcikhAhD2ks52.gphDNLD6W/f1
     config:
-      - id: disk0
-        name: disk0
-        type: disk
-        ptable: gpt
-        preserve: true
-        grub_device: false
-      - id: esp
-        type: partition
-        device: disk0
-        size: 1G
+      - type: partition
+        id: boot-partition
+        size: 10G
         flag: boot
-        number: 1
-        wipe: superblock
-        grub_device: true
-      - id: esp-format
-        type: format
-        fstype: fat32
-        volume: esp
-      - id: boot
-        type: partition
-        device: disk0
-        size: 2G
-        number: 2
-      - id: boot-format
-        type: format
-        fstype: ext4
-        volume: boot
-      - id: root
-        type: lvm
+      - type: partition
+        id: root-partition
+        size: 32G
+      - type: partition
+        id: home-partition
+        size: 55G
+      - id: cryptroot
+        type: luks
+        device: root-partition
         password: aim
-        device: disk0
-        size: 40G
-        wipe: superblock
-        number: 3
-      - id: vgroot
-        type: lvm_volgroup
-        name: vgroot
-        devices: [root]
-      - id: lvroot
+      - id: crypthome
+        type: luks
+        device: home-partition
+        password: aim
+      - id: lvm-root
         type: lvm_partition
-        name: lvroot
-        volgroup: vgroot
-        wipe: superblock
-        size: 20G
-      - id: luroot
-        type: dm_crypt
-        dm_name: luroot
-        volume: lvroot
-        key: banan
-      - id: luroot-format
+        volgroup: vgubuntu
+        name: lv_root
+        size: -1
+        device: cryptroot
+      - id: lvm-home
+        type: lvm_partition
+        volgroup: vgubuntu
+        name: lv_home
+        size: -1
+        device: crypthome
+      - id: fs-boot
         type: format
         fstype: ext4
-        volume: luroot
-      - id: pool_part
-        type: partition
-        device: disk0
-        size: -1
-        number: 4
-      - id: pool
-        type: zpool
-        pool: pool
-        vdevs: [pool_part]
-        mountpoint: /pool
-        pool_properties:
-          version: null
-          ashift: 12
-          autotrim: "on"
-        fs_properties:
-          acltype: posixacl
-          xattr: sa
-          compression: lz4
-          normalization: formD
-          relatime: "on"
-      - id: luroot-mount
+        volume: boot-partition
+      - id: fs-root
+        type: format
+        fstype: ext4
+        volume: lvm-root
+      - id: fs-home
+        type: format
+        fstype: ext4
+        volume: lvm-home
+      - id: mount-boot
         type: mount
-        device: luroot-format
-        path: /
-      - id: boot-mount
-        type: mount
-        device: boot-format
         path: /boot
-      - id: esp-mount
+        device: fs-boot
+      - id: mount-root
         type: mount
-        device: esp-format
-        path: /boot/efi
-      - id: home
-        type: zfs
-        pool: pool
-        volume: home
-        properties:
-          mountpoint: /home
+        path: /
+        device: fs-root
+      - id: mount-home
+        type: mount
+        path: /home
+        device: fs-home
