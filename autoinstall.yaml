@@ -16,9 +16,6 @@ autoinstall:
     allow-pw: true
     install-server: true
   storage:
-    layout:
-      name: lvm
-      password: aim
     config:
       - id: disk0
         name: disk0
