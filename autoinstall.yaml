@@ -46,13 +46,13 @@ autoinstall:
         type: dm_crypt
         volume: pv
         preserve: false
-        key: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
+        key: '123'
       - id: volumegroup
         name: volgroup
         type: lvm_volgroup
         devices: [ encrypted ]
         preserve: false
-        key: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
+        key: '123'
         volume: pv
       - id: lv_root
         name: root
