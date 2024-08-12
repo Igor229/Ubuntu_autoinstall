@@ -7,8 +7,8 @@ autoinstall:
   keyboard:
     layout: us
   identity:
-    username: kukuruz
-    hostname: linuxconfig
+    username: user
+    hostname: LPT-0
     password: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
   ssh:
     install-server: true
@@ -27,7 +27,7 @@ autoinstall:
       - type: partition
         id: efipart
         device: disk
-        size: 600M
+        size: 2G
         flag: boot
         grub_device: true
         wipe: superblock
@@ -42,17 +42,17 @@ autoinstall:
         type: partition
         device: disk
         size: -1
-      - id: client_encrypted
+      - id: encrypted
         type: dm_crypt
         volume: pv
         preserve: false
-        key: qwe
+        key: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
       - id: volumegroup
-        name: ubuntu-volumegroup
+        name: volgroup
         type: lvm_volgroup
-        devices: [ client_encrypted ]
+        devices: [ encrypted ]
         preserve: false
-        key: qwe
+        key: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
         volume: pv
       - id: lv_root
         name: root
@@ -62,7 +62,7 @@ autoinstall:
       - id: lv_home
         name: home
         volgroup: volumegroup
-        size: 55G
+        size: -1
         type: lvm_partition
       - type: format
         id: efipart_fs
