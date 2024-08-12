@@ -7,18 +7,21 @@ autoinstall:
   keyboard:
     layout: us
   identity:
-    username: egidio
+    username: kukuruz
     hostname: linuxconfig
     password: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
   ssh:
     install-server: true
     allow-pw: true
   storage:
+    grub:
+      reorder_uefi: False
     config:
       - type: disk
         id: disk
         ptable: gpt
-        path: /dev/sda
+        match:
+          path: /dev/sda
         wipe: superblock
         name: system
       - type: partition
@@ -35,30 +38,32 @@ autoinstall:
         size: 5G
         wipe: superblock
         number: 2
-      - type: partition
-        id: root
+      - id: pv
+        type: partition
+        device: disk
+        size: -1
+      - id: client_encrypted
+        type: dm_crypt
+        volume: pv
+        preserve: false
+        key: qwe
+      - id: volumegroup
+        name: ubuntu-volumegroup
+        type: lvm_volgroup
+        devices: [ client_encrypted ]
+        preserve: false
+        key: qwe
+        volume: pv
+      - id: lv_root
         name: root
-        size: 30G
-        device: disk
-        wipe: superblock
-        number: 3
-      - type: partition
-        id: home
+        volgroup: volumegroup
+        size: 35G
+        type: lvm_partition
+      - id: lv_home
         name: home
-        size: 50G
-        device: disk
-        wipe: superblock
-        number: 4
-      - type: dm_crypt
-        id: crypt-root
-        volume: root
-        dm_name: crypt-root
-        key: setup
-      - type: dm_home
-        id: crypt-home
-        volume: home
-        dm_name: crypt-home
-        key: setup
+        volgroup: volumegroup
+        size: 55G
+        type: lvm_partition
       - type: format
         id: efipart_fs
         volume: efipart
@@ -71,12 +76,14 @@ autoinstall:
         label: boot
       - type: format
         id: root_fs
-        volume: crypt-root
+        volume: lv_root
+        preserve: false
         fstype: ext4
         label: root
       - type: format
         id: home_fs
-        volume: crypt-home
+        volume: lv_home
+        preserve: false
         fstype: ext4
         label: home
       - type: mount
