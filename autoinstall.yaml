@@ -14,8 +14,6 @@ autoinstall:
     install-server: true
     allow-pw: true
   storage:
-    grub:
-      reorder_uefi: False
     config:
       - type: disk
         id: disk
