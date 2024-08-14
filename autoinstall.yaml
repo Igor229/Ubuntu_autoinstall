@@ -20,8 +20,6 @@ autoinstall:
       - type: disk
         id: disk
         ptable: gpt
-        match:
-          path: /dev/sda
         wipe: superblock
         name: system
       - type: partition
