@@ -50,7 +50,7 @@ autoinstall:
       - id: volumegroup
         name: volgroup
         type: lvm_volgroup
-        devices: [ sda3_crypt ]
+        devices: [ nvme0n1p4_crypt ]
         preserve: false
         key: '123'
         volume: pv
