@@ -38,7 +38,7 @@ autoinstall:
         type: partition
         device: disk
         size: -1
-      - id: nvme0n1p4_crypt
+      - id: nvme0n1p3_crypt
         type: dm_crypt
         volume: pv
         preserve: false
@@ -46,7 +46,7 @@ autoinstall:
       - id: volumegroup
         name: volgroup
         type: lvm_volgroup
-        devices: [ nvme0n1p4_crypt ]
+        devices: [ nvme0n1p3_crypt ]
         preserve: false
         key: '123'
         volume: pv
