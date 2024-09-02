@@ -8,7 +8,7 @@ autoinstall:
     layout: us
   identity:
     username: user
-    hostname: LPT-0
+    hostname: LPT-68
     password: '$6$XQ1Joh/DRxp8khAY$TFK9i243b3ANadRCtcgk1.X/LXOi8/yp7Ou.NHJZYbwTeMIUSc73DDrdA3rcvsgwjND.rgpfL1ECn9twxkFBJ0'
   ssh:
     install-server: true
