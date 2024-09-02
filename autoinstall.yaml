@@ -53,7 +53,7 @@ autoinstall:
       - id: lv_root
         name: root
         volgroup: volumegroup
-        size: 35G
+        size: 150G
         type: lvm_partition
       - id: lv_home
         name: home
